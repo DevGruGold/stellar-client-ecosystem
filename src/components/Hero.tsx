@@ -39,15 +39,15 @@ const Hero = () => {
       <div className="container relative max-w-7xl mx-auto px-6 z-10 pt-20">
         <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
           <div className="inline-block rounded-full bg-black/5 px-4 py-1.5 text-sm font-medium mb-6 animate-bounce-subtle">
-            Introducing the complete client management suite
+            Introducing Client Compass AI
           </div>
           
           <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-balance mb-6 animate-fade-in">
-            Estrella: Your New Client Management Superstar
+            Meet Estrella & Stellar, Your Client Management Superstars
           </h1>
           
           <p className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto mb-10 leading-relaxed text-balance animate-fade-in" style={{ animationDelay: '0.1s' }}>
-            Empower your business with an AI-driven, modular ecosystem that captures every client need, plans every project, and manages content seamlessly.
+            Empower your business with an AI-driven, modular ecosystem featuring dual AI assistants that capture every client need, plan every project, and manage content seamlessly.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 animate-fade-in" style={{ animationDelay: '0.2s' }}>
@@ -63,6 +63,36 @@ const Hero = () => {
             >
               Explore the Suite
             </a>
+          </div>
+        </div>
+
+        {/* AI Personas */}
+        <div className="flex justify-center mt-16 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl">
+            <div className="glass-card p-6 hover-lift flex flex-col items-center text-center">
+              <div className="w-20 h-20 rounded-full bg-pink-100 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-pink-500">
+                  <path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"></path>
+                  <path d="M3 16c0 2 4 4 9 4s9-2 9-4"></path>
+                  <path d="M12 12v8"></path>
+                  <line x1="8" y1="16" x2="8" y2="16"></line>
+                  <line x1="16" y1="16" x2="16" y2="16"></line>
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Estrella</h3>
+              <p className="text-gray-600">Your strategic planning assistant, specializing in project organization and content management.</p>
+            </div>
+            
+            <div className="glass-card p-6 hover-lift flex flex-col items-center text-center">
+              <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500">
+                  <circle cx="12" cy="8" r="5"></circle>
+                  <path d="M20 21v-2a5 5 0 0 0-5-5H9a5 5 0 0 0-5 5v2"></path>
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Stellar</h3>
+              <p className="text-gray-600">Your client relations expert, focusing on needs analysis and real-time performance insights.</p>
+            </div>
           </div>
         </div>
 

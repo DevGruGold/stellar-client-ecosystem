@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
@@ -61,12 +60,12 @@ const Index = () => {
                 Complete, scalable client management solution
               </h2>
               <p className="text-gray-700 leading-relaxed mb-8 max-w-xl text-balance">
-                Estrella brings together client management, project planning, analytics, and content orchestration in one seamless ecosystem. Use modules together or as standalone products.
+                Client Compass AI brings together client management, project planning, analytics, and content orchestration in one seamless ecosystem. Use modules together or as standalone products.
               </p>
               
               <ul className="space-y-4 mb-8">
                 {[
-                  "AI-driven insights across all modules",
+                  "AI assistants Estrella & Stellar to guide your workflow",
                   "Seamless integrations with your favorite tools",
                   "Real-time collaboration and data sharing",
                   "Customizable to fit your unique workflow"
@@ -149,34 +148,30 @@ const Index = () => {
               description="A dynamic interface that engages clients and captures their requirements through AI-guided conversations."
               icon={MessageSquareText}
               iconColor="#8b5cf6"
-              className="animate-on-scroll"
-              style={{ animationDelay: '0.1s' }}
+              className="animate-on-scroll delay-100"
             />
             <ModuleCard 
               title="Blueprint Builder"
               description="Translates client needs into detailed, actionable project plans with customizable templates and smart recommendations."
               icon={ClipboardList}
               iconColor="#10b981"
-              className="animate-on-scroll"
-              style={{ animationDelay: '0.2s' }}
+              className="animate-on-scroll delay-200"
             />
             <ModuleCard 
               title="Project Pulse"
               description="Keeps you informed with live dashboards, KPI tracking, and predictive insights to ensure timely project delivery."
               icon={BarChart3}
               iconColor="#f97316"
-              className="animate-on-scroll"
-              style={{ animationDelay: '0.3s' }}
+              className="animate-on-scroll delay-300"
             />
             <ModuleCard 
               title="Content Conductor"
               description="Orchestrates all your digital assets and creative content, integrating seamlessly with client and project data."
               icon={FileText}
               iconColor="#f43f5e"
-              className="animate-on-scroll"
-              style={{ animationDelay: '0.4s' }}
+              className="animate-on-scroll delay-400"
             />
-            <div className="glass-card p-8 flex flex-col items-center justify-center text-center hover-lift animate-on-scroll" style={{ animationDelay: '0.5s' }}>
+            <div className="glass-card p-8 flex flex-col items-center justify-center text-center hover-lift animate-on-scroll delay-500">
               <div className="mb-5 p-3 rounded-xl bg-black/5 w-fit">
                 <Sparkles size={28} className="text-gray-800" />
               </div>
@@ -279,33 +274,31 @@ const Index = () => {
               Trusted by forward-thinking businesses
             </h2>
             <p className="text-gray-700 leading-relaxed text-balance">
-              See how Estrella is helping businesses streamline their operations and delight their clients.
+              See how Client Compass AI is helping businesses streamline their operations and delight their clients.
             </p>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <Testimonial 
-              quote="Estrella has transformed how we manage our client projects. The Blueprint Builder alone has saved us countless hours in planning."
+              quote="Client Compass AI has transformed how we manage our projects. Estrella's recommendations alone have saved us countless hours in planning."
               author="Sarah Johnson"
               role="Project Director"
               company="Design Collective"
               className="animate-on-scroll"
             />
             <Testimonial 
-              quote="The integration between modules gives us a unified view of our business that we've never had before. Game-changing for our agency."
+              quote="The integration between modules gives us a unified view of our business that we've never had before. Stellar is like having an extra team member!"
               author="Michael Chen"
               role="CEO"
               company="Innovate Digital"
-              className="animate-on-scroll"
-              style={{ animationDelay: '0.1s' }}
+              className="animate-on-scroll delay-100"
             />
             <Testimonial 
-              quote="Client Compass has completely changed our client relationships. We're now able to anticipate needs before clients even express them."
+              quote="The dual AI approach with Estrella and Stellar has completely changed our client relationships. We're now able to anticipate needs before clients even express them."
               author="Elena Rodriguez"
               role="Client Success Manager"
               company="Web Solutions Inc."
-              className="animate-on-scroll"
-              style={{ animationDelay: '0.2s' }}
+              className="animate-on-scroll delay-200"
             />
           </div>
         </div>
@@ -323,7 +316,7 @@ const Index = () => {
                 <div className="text-center md:text-left">
                   <h2 className="text-2xl md:text-3xl font-display font-bold mb-3">Ready to transform your client operations?</h2>
                   <p className="text-gray-700 mb-0 md:max-w-md">
-                    Schedule a personalized demo to see how Estrella can work for your specific business needs.
+                    Schedule a personalized demo to see how Client Compass AI with Estrella & Stellar can work for your specific business needs.
                   </p>
                 </div>
                 
@@ -359,7 +352,7 @@ const Index = () => {
               Let's start the conversation
             </h2>
             <p className="text-gray-700 leading-relaxed text-balance">
-              We're here to answer your questions and show you how Estrella can work for your specific needs.
+              We're here to answer your questions and show you how Client Compass AI can work for your specific needs.
             </p>
           </div>
           

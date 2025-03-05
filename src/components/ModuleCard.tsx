@@ -1,43 +1,38 @@
 
 import React from 'react';
-import { cn } from '@/lib/utils';
 import { LucideIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-interface ModuleCardProps {
+export interface ModuleCardProps {
   title: string;
   description: string;
   icon: LucideIcon;
-  iconColor?: string;
+  iconColor: string;
   className?: string;
 }
 
-const ModuleCard = ({ 
-  title, 
-  description, 
-  icon: Icon, 
-  iconColor = "#000",
-  className 
-}: ModuleCardProps) => {
+const ModuleCard = ({ title, description, icon: Icon, iconColor, className }: ModuleCardProps) => {
   return (
-    <div 
-      className={cn(
-        "relative glass-card p-8 hover-lift group", 
-        className
-      )}
-    >
-      <div className="absolute inset-0 bg-gradient-to-br from-white/0 to-white/40 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-      
-      <div className="mb-5 relative z-10">
-        <div className="rounded-xl bg-white/80 p-3 w-fit shadow-sm">
-          <Icon size={28} color={iconColor} strokeWidth={1.5} />
-        </div>
+    <div className={cn(
+      "glass-card p-8 hover-lift flex flex-col h-full",
+      className
+    )}>
+      <div className="mb-5 p-3 rounded-xl" style={{ backgroundColor: `${iconColor}10` }}>
+        <Icon size={28} style={{ color: iconColor }} />
       </div>
       
-      <h3 className="text-xl font-semibold mb-3 text-gray-900 relative z-10">{title}</h3>
+      <h3 className="text-xl font-semibold mb-3">{title}</h3>
       
-      <p className="text-gray-600 leading-relaxed relative z-10">{description}</p>
+      <p className="text-gray-600 mb-5 flex-grow">{description}</p>
       
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gray-200 to-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-b-xl"></div>
+      <div className="mt-auto">
+        <a 
+          href="#contact" 
+          className="text-sm font-medium text-gray-800 hover:text-black underline-offset-4 hover:underline transition-colors"
+        >
+          Learn more
+        </a>
+      </div>
     </div>
   );
 };
