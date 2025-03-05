@@ -1,9 +1,11 @@
 
 import React, { useState } from 'react';
 import { ChevronRight, Cpu, Users } from 'lucide-react';
+import AIChat from './AIChat';
 
 const Hero = () => {
   const [activeTab, setActiveTab] = useState<'estrella' | 'stellar'>('estrella');
+  const [showChat, setShowChat] = useState(false);
   
   return (
     <section className="pt-32 pb-16 md:pb-24 relative overflow-hidden">
@@ -26,14 +28,24 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="#personas" className="btn-primary">
-              Meet the AI Assistants
-            </a>
+            <button 
+              onClick={() => setShowChat(!showChat)} 
+              className="btn-primary"
+            >
+              {showChat ? "Hide AI Assistants" : "Try the AI Assistants"}
+            </button>
             <a href="#modules" className="btn-secondary">
               Explore Features
             </a>
           </div>
         </div>
+        
+        {/* AI Chat Interface */}
+        {showChat && (
+          <div className="mt-8 mb-16 animate-fade-up">
+            <AIChat />
+          </div>
+        )}
         
         {/* AI Persona Showcase */}
         <div className="mt-16 grid md:grid-cols-2 gap-8" id="personas">

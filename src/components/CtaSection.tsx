@@ -21,8 +21,11 @@ const CtaSection = () => {
               <a href="#contact" className="btn-primary whitespace-nowrap">
                 Request a Demo
               </a>
-              <a href="#modules" className="btn-secondary whitespace-nowrap">
-                Explore Modules
+              <a href="#" onClick={(e) => {
+                e.preventDefault();
+                document.querySelector('#personas')?.scrollIntoView({ behavior: 'smooth' });
+              }} className="btn-secondary whitespace-nowrap">
+                Try Estrella & Stellar
               </a>
             </div>
           </div>
