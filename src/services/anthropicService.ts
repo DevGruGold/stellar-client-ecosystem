@@ -19,12 +19,16 @@ export const personas = {
   }
 };
 
+// Hard-coded API key (this is a public/demo key)
+const HARDCODED_API_KEY = "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";
+
 export async function generateAIResponse(
   message: string, 
   persona: 'estrella' | 'stellar'
 ): Promise<AnthropicResponse> {
   try {
-    const API_KEY = import.meta.env.ANTHROPIC_API_KEY;
+    // Use the hard-coded key if the environment variable is not set
+    const API_KEY = import.meta.env.ANTHROPIC_API_KEY || HARDCODED_API_KEY;
     
     if (!API_KEY) {
       console.error("Missing Anthropic API key");
