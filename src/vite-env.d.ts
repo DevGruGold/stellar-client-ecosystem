@@ -4,6 +4,7 @@
 interface ImportMetaEnv {
   readonly VITE_APP_TITLE: string
   readonly ANTHROPIC_API_KEY: string
+  readonly VITE_OPENAI_API_KEY: string
   // more env variables...
 }
 

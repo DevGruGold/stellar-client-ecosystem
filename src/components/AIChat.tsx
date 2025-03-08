@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Cpu, Send, Users, Loader2, AlertTriangle } from 'lucide-react';
+import { Cpu, Send, Users, Loader2, AlertTriangle, Wifi, WifiOff } from 'lucide-react';
 import { generateAIResponse, personas } from '@/services/anthropicService';
 import { toast } from '@/components/ui/use-toast';
 
@@ -18,15 +18,40 @@ const AIChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [apiConfigured, setApiConfigured] = useState(true);
+  const [networkStatus, setNetworkStatus] = useState<'online' | 'offline' | 'checking'>('checking');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Check network status
+  useEffect(() => {
+    const handleOnline = () => setNetworkStatus('online');
+    const handleOffline = () => setNetworkStatus('offline');
+    
+    // Initial check
+    setNetworkStatus(navigator.onLine ? 'online' : 'offline');
+    
+    // Add event listeners
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    // Remove event listeners on cleanup
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   useEffect(() => {
     // Check if API key is configured
     const checkAPIConfig = async () => {
       try {
-        const testResponse = await generateAIResponse("test", "estrella");
+        console.log("Checking API configuration...");
+        const testResponse = await generateAIResponse("Hello", "estrella");
         if (testResponse.error?.includes("Missing API key")) {
+          console.log("API key missing");
           setApiConfigured(false);
+        } else {
+          console.log("API configuration check passed");
+          setApiConfigured(true);
         }
       } catch (error) {
         console.error("Error checking API configuration:", error);
@@ -34,7 +59,9 @@ const AIChat: React.FC = () => {
       }
     };
     
-    checkAPIConfig();
+    if (networkStatus === 'online') {
+      checkAPIConfig();
+    }
 
     const initialMessages: Message[] = [
       {
@@ -51,7 +78,7 @@ const AIChat: React.FC = () => {
       }
     ];
     setMessages(initialMessages);
-  }, []);
+  }, [networkStatus]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -61,10 +88,19 @@ const AIChat: React.FC = () => {
     e.preventDefault();
     if (!inputText.trim()) return;
     
+    if (networkStatus === 'offline') {
+      toast({
+        title: "No Internet Connection",
+        description: "You are currently offline. Please check your internet connection and try again.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     if (!apiConfigured) {
       toast({
         title: "API Configuration Error",
-        description: "The Anthropic API key is not properly configured. Please check the configuration.",
+        description: "The AI service is not properly configured. Please try again later.",
         variant: "destructive"
       });
       return;
@@ -80,7 +116,9 @@ const AIChat: React.FC = () => {
     setIsLoading(true);
 
     try {
+      console.log("Sending message to AI:", inputText);
       const response = await generateAIResponse(inputText, activePersona);
+      console.log("Received AI response:", response);
       
       const aiMessage: Message = {
         text: response.text,
@@ -123,12 +161,22 @@ const AIChat: React.FC = () => {
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 max-w-3xl mx-auto">
-      {!apiConfigured && (
+      {networkStatus === 'offline' && (
+        <div className="bg-amber-50 border-l-4 border-amber-500 p-4 flex items-center gap-2">
+          <WifiOff className="text-amber-500" />
+          <div>
+            <p className="font-medium text-amber-800">No Internet Connection</p>
+            <p className="text-sm text-amber-700">You are currently offline. Please check your internet connection to use the AI assistants.</p>
+          </div>
+        </div>
+      )}
+      
+      {networkStatus === 'online' && !apiConfigured && (
         <div className="bg-amber-50 border-l-4 border-amber-500 p-4 flex items-center gap-2">
           <AlertTriangle className="text-amber-500" />
           <div>
-            <p className="font-medium text-amber-800">API Configuration Required</p>
-            <p className="text-sm text-amber-700">Please check your network connection and API configuration.</p>
+            <p className="font-medium text-amber-800">AI Service Not Available</p>
+            <p className="text-sm text-amber-700">The AI service is currently unavailable. Please try again later.</p>
           </div>
         </div>
       )}
@@ -141,6 +189,7 @@ const AIChat: React.FC = () => {
               : 'hover:bg-gray-50 text-gray-600'
           }`}
           onClick={() => setActivePersona('estrella')}
+          disabled={networkStatus === 'offline'}
         >
           <Cpu size={18} />
           <span>Estrella</span>
@@ -152,10 +201,19 @@ const AIChat: React.FC = () => {
               : 'hover:bg-gray-50 text-gray-600'
           }`}
           onClick={() => setActivePersona('stellar')}
+          disabled={networkStatus === 'offline'}
         >
           <Users size={18} />
           <span>Stellar</span>
         </button>
+        
+        <div className="ml-auto flex items-center px-4">
+          {networkStatus === 'online' ? (
+            <Wifi className="text-green-500" size={16} />
+          ) : (
+            <WifiOff className="text-gray-400" size={16} />
+          )}
+        </div>
       </div>
 
       <div className="p-4 h-96 overflow-y-auto bg-gray-50">
@@ -208,12 +266,12 @@ const AIChat: React.FC = () => {
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder={`Ask ${activePersona === 'estrella' ? 'Estrella' : 'Stellar'} something...`}
-          disabled={isLoading || !apiConfigured}
+          disabled={isLoading || networkStatus === 'offline' || !apiConfigured}
           className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
         />
         <button 
           type="submit" 
-          disabled={isLoading || !inputText.trim() || !apiConfigured}
+          disabled={isLoading || !inputText.trim() || networkStatus === 'offline' || !apiConfigured}
           className={`p-2 rounded-lg ${
             activePersona === 'estrella' 
               ? 'bg-primary text-white' 
