@@ -29,7 +29,7 @@ export async function generateAIResponse(
     if (!API_KEY) {
       console.error("Missing Anthropic API key");
       return { 
-        text: "Sorry, I'm unable to respond right now due to a configuration issue.",
+        text: "I'm unable to respond right now because the API key hasn't been configured. Please check your environment variables and make sure ANTHROPIC_API_KEY is set correctly.",
         error: "Missing API key" 
       };
     }
@@ -53,23 +53,32 @@ export async function generateAIResponse(
       }),
     });
 
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Anthropic API error:", errorData);
+      return { 
+        text: `I encountered an error (${response.status}): ${errorData.error?.message || "Unknown error"}. Please check your API configuration.`,
+        error: errorData.error?.message || `HTTP error ${response.status}` 
+      };
+    }
+
     const data = await response.json();
     
     if (data.error) {
       console.error("Anthropic API error:", data.error);
       return { 
-        text: "Sorry, I encountered an error while processing your request.",
+        text: "Sorry, I encountered an error while processing your request. Please check your API configuration.",
         error: data.error.message 
       };
     }
 
     // Extract the response text from the Anthropic API response
-    const responseText = data.content[0].text;
+    const responseText = data.content?.[0]?.text || "I couldn't generate a response. Please check the API configuration.";
     return { text: responseText };
   } catch (error) {
     console.error("Error calling Anthropic API:", error);
     return { 
-      text: "Sorry, I encountered an error while processing your request.",
+      text: "Sorry, I encountered an error while processing your request. Please check your network connection and API configuration.",
       error: String(error) 
     };
   }

@@ -1,5 +1,6 @@
+
 import React, { useState, useRef, useEffect } from 'react';
-import { Cpu, Send, Users, Loader2 } from 'lucide-react';
+import { Cpu, Send, Users, Loader2, AlertTriangle } from 'lucide-react';
 import { generateAIResponse, personas } from '@/services/anthropicService';
 import { toast } from '@/components/ui/use-toast';
 
@@ -8,6 +9,7 @@ interface Message {
   sender: 'user' | 'ai';
   persona?: 'estrella' | 'stellar';
   timestamp: Date;
+  error?: boolean;
 }
 
 const AIChat: React.FC = () => {
@@ -15,9 +17,25 @@ const AIChat: React.FC = () => {
   const [inputText, setInputText] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [apiConfigured, setApiConfigured] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Check if API key is configured
+    const checkAPIConfig = async () => {
+      try {
+        const testResponse = await generateAIResponse("test", "estrella");
+        if (testResponse.error?.includes("Missing API key")) {
+          setApiConfigured(false);
+        }
+      } catch (error) {
+        console.error("Error checking API configuration:", error);
+        setApiConfigured(false);
+      }
+    };
+    
+    checkAPIConfig();
+
     const initialMessages: Message[] = [
       {
         text: "Hello! I'm Estrella, your strategic planning assistant. How can I help you organize your projects today?",
@@ -42,6 +60,15 @@ const AIChat: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputText.trim()) return;
+    
+    if (!apiConfigured) {
+      toast({
+        title: "API Configuration Error",
+        description: "The Anthropic API key is not properly configured. Please set the ANTHROPIC_API_KEY environment variable.",
+        variant: "destructive"
+      });
+      return;
+    }
 
     const userMessage: Message = {
       text: inputText,
@@ -55,26 +82,38 @@ const AIChat: React.FC = () => {
     try {
       const response = await generateAIResponse(inputText, activePersona);
       
-      if (response.error) {
-        toast({
-          title: "Error",
-          description: "There was an issue connecting to the AI service. Please try again.",
-          variant: "destructive"
-        });
-      }
-
       const aiMessage: Message = {
         text: response.text,
         sender: 'ai',
         persona: activePersona,
-        timestamp: new Date()
+        timestamp: new Date(),
+        error: !!response.error
       };
+      
       setMessages(prev => [...prev, aiMessage]);
+      
+      if (response.error) {
+        toast({
+          title: "AI Response Error",
+          description: response.error,
+          variant: "destructive"
+        });
+      }
     } catch (error) {
       console.error('Error getting AI response:', error);
+      
+      // Add error message to chat
+      setMessages(prev => [...prev, {
+        text: "Sorry, there was an error connecting to the AI service. Please check your configuration and try again.",
+        sender: 'ai',
+        persona: activePersona,
+        timestamp: new Date(),
+        error: true
+      }]);
+      
       toast({
         title: "Error",
-        description: "There was an issue connecting to the AI service. Please try again.",
+        description: "There was an issue connecting to the AI service. Please check your configuration.",
         variant: "destructive"
       });
     } finally {
@@ -84,6 +123,16 @@ const AIChat: React.FC = () => {
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 max-w-3xl mx-auto">
+      {!apiConfigured && (
+        <div className="bg-amber-50 border-l-4 border-amber-500 p-4 flex items-center gap-2">
+          <AlertTriangle className="text-amber-500" />
+          <div>
+            <p className="font-medium text-amber-800">API Configuration Required</p>
+            <p className="text-sm text-amber-700">The ANTHROPIC_API_KEY environment variable is not set. AI assistants will not function properly.</p>
+          </div>
+        </div>
+      )}
+      
       <div className="flex border-b">
         <button
           className={`flex items-center gap-2 px-6 py-3 font-medium transition-colors ${
@@ -124,9 +173,11 @@ const AIChat: React.FC = () => {
                 className={`max-w-xs sm:max-w-md p-3 rounded-lg ${
                   message.sender === 'user'
                     ? 'bg-gray-200 text-gray-800'
-                    : message.persona === 'estrella'
-                      ? 'bg-primary/10 text-gray-800'
-                      : 'bg-accent/10 text-gray-800'
+                    : message.error
+                      ? 'bg-red-50 text-red-800 border border-red-200'
+                      : message.persona === 'estrella'
+                        ? 'bg-primary/10 text-gray-800'
+                        : 'bg-accent/10 text-gray-800'
                 }`}
               >
                 {message.text}
@@ -157,12 +208,12 @@ const AIChat: React.FC = () => {
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder={`Ask ${activePersona === 'estrella' ? 'Estrella' : 'Stellar'} something...`}
-          disabled={isLoading}
+          disabled={isLoading || !apiConfigured}
           className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
         />
         <button 
           type="submit" 
-          disabled={isLoading || !inputText.trim()}
+          disabled={isLoading || !inputText.trim() || !apiConfigured}
           className={`p-2 rounded-lg ${
             activePersona === 'estrella' 
               ? 'bg-primary text-white' 
