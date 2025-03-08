@@ -64,7 +64,7 @@ const AIChat: React.FC = () => {
     if (!apiConfigured) {
       toast({
         title: "API Configuration Error",
-        description: "The Anthropic API key is not properly configured. Please set the ANTHROPIC_API_KEY environment variable.",
+        description: "The Anthropic API key is not properly configured. Please check the configuration.",
         variant: "destructive"
       });
       return;
@@ -104,7 +104,7 @@ const AIChat: React.FC = () => {
       
       // Add error message to chat
       setMessages(prev => [...prev, {
-        text: "Sorry, there was an error connecting to the AI service. Please check your configuration and try again.",
+        text: "Sorry, there was an error connecting to the AI service. Please check your network connection and try again.",
         sender: 'ai',
         persona: activePersona,
         timestamp: new Date(),
@@ -112,8 +112,8 @@ const AIChat: React.FC = () => {
       }]);
       
       toast({
-        title: "Error",
-        description: "There was an issue connecting to the AI service. Please check your configuration.",
+        title: "Connection Error",
+        description: "There was an issue connecting to the AI service. Please check your network connection.",
         variant: "destructive"
       });
     } finally {
@@ -128,7 +128,7 @@ const AIChat: React.FC = () => {
           <AlertTriangle className="text-amber-500" />
           <div>
             <p className="font-medium text-amber-800">API Configuration Required</p>
-            <p className="text-sm text-amber-700">The ANTHROPIC_API_KEY environment variable is not set. AI assistants will not function properly.</p>
+            <p className="text-sm text-amber-700">Please check your network connection and API configuration.</p>
           </div>
         </div>
       )}
