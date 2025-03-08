@@ -3,7 +3,7 @@
 
 interface ImportMetaEnv {
   readonly VITE_APP_TITLE: string
-  readonly GEMINI_API_KEY: string
+  readonly ANTHROPIC_API_KEY: string
   // more env variables...
 }
 

@@ -1,7 +1,6 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Cpu, Send, Users, Loader2 } from 'lucide-react';
-import { generateAIResponse, personas } from '@/services/geminiService';
+import { generateAIResponse, personas } from '@/services/anthropicService';
 import { toast } from '@/components/ui/use-toast';
 
 interface Message {
@@ -18,7 +17,6 @@ const AIChat: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Initial welcome messages
   useEffect(() => {
     const initialMessages: Message[] = [
       {
@@ -37,7 +35,6 @@ const AIChat: React.FC = () => {
     setMessages(initialMessages);
   }, []);
 
-  // Auto-scroll to bottom when messages update
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -46,7 +43,6 @@ const AIChat: React.FC = () => {
     e.preventDefault();
     if (!inputText.trim()) return;
 
-    // Add user message
     const userMessage: Message = {
       text: inputText,
       sender: 'user',
@@ -57,7 +53,6 @@ const AIChat: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // Get AI response
       const response = await generateAIResponse(inputText, activePersona);
       
       if (response.error) {
@@ -68,7 +63,6 @@ const AIChat: React.FC = () => {
         });
       }
 
-      // Add AI response
       const aiMessage: Message = {
         text: response.text,
         sender: 'ai',
@@ -90,7 +84,6 @@ const AIChat: React.FC = () => {
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 max-w-3xl mx-auto">
-      {/* Persona Tabs */}
       <div className="flex border-b">
         <button
           className={`flex items-center gap-2 px-6 py-3 font-medium transition-colors ${
@@ -116,10 +109,8 @@ const AIChat: React.FC = () => {
         </button>
       </div>
 
-      {/* Chat Messages */}
       <div className="p-4 h-96 overflow-y-auto bg-gray-50">
         {messages.map((message, index) => {
-          // Only show messages from the active persona or user messages
           if (message.sender === 'ai' && message.persona !== activePersona && index > 1) {
             return null;
           }
@@ -160,7 +151,6 @@ const AIChat: React.FC = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Form */}
       <form onSubmit={handleSubmit} className="p-4 border-t flex gap-2">
         <input
           type="text"

@@ -1,7 +1,7 @@
 
-// Gemini API service for Estrella and Stellar AI personas
+// Anthropic API service for Estrella and Stellar AI personas
 
-interface GeminiResponse {
+interface AnthropicResponse {
   text: string;
   error?: string;
 }
@@ -22,54 +22,32 @@ export const personas = {
 export async function generateAIResponse(
   message: string, 
   persona: 'estrella' | 'stellar'
-): Promise<GeminiResponse> {
+): Promise<AnthropicResponse> {
   try {
-    const API_KEY = process.env.GEMINI_API_KEY;
+    const API_KEY = import.meta.env.ANTHROPIC_API_KEY;
     
     if (!API_KEY) {
-      console.error("Missing Gemini API key");
+      console.error("Missing Anthropic API key");
       return { 
         text: "Sorry, I'm unable to respond right now due to a configuration issue.",
         error: "Missing API key" 
       };
     }
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`, {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
+        'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        contents: [
+        model: "claude-3-sonnet-20240229",
+        max_tokens: 1024,
+        messages: [
           {
             role: "user",
-            parts: [
-              { text: `${personas[persona].prompt}\n\nUser message: ${message}` }
-            ]
-          }
-        ],
-        generationConfig: {
-          temperature: 0.7,
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 1024,
-        },
-        safetySettings: [
-          {
-            category: "HARM_CATEGORY_HARASSMENT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          },
-          {
-            category: "HARM_CATEGORY_HATE_SPEECH",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          },
-          {
-            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          },
-          {
-            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+            content: `${personas[persona].prompt}\n\nUser message: ${message}`
           }
         ]
       }),
@@ -78,18 +56,18 @@ export async function generateAIResponse(
     const data = await response.json();
     
     if (data.error) {
-      console.error("Gemini API error:", data.error);
+      console.error("Anthropic API error:", data.error);
       return { 
         text: "Sorry, I encountered an error while processing your request.",
         error: data.error.message 
       };
     }
 
-    // Extract the response text from the Gemini API response
-    const responseText = data.candidates[0].content.parts[0].text;
+    // Extract the response text from the Anthropic API response
+    const responseText = data.content[0].text;
     return { text: responseText };
   } catch (error) {
-    console.error("Error calling Gemini API:", error);
+    console.error("Error calling Anthropic API:", error);
     return { 
       text: "Sorry, I encountered an error while processing your request.",
       error: String(error) 
