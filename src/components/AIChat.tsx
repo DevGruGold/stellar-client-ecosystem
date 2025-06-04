@@ -1,7 +1,6 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Cpu, Send, Users, Loader2, AlertTriangle, Wifi, WifiOff } from 'lucide-react';
-import { generateAIResponse, personas } from '@/services/anthropicService';
+import { generateAIResponse, personas } from '@/services/geminiService';
 import { toast } from '@/components/ui/use-toast';
 
 interface Message {
@@ -44,17 +43,17 @@ const AIChat: React.FC = () => {
     // Check if API key is configured
     const checkAPIConfig = async () => {
       try {
-        console.log("Checking API configuration...");
+        console.log("Checking Gemini API configuration...");
         const testResponse = await generateAIResponse("Hello", "estrella");
-        if (testResponse.error?.includes("Missing API key")) {
-          console.log("API key missing");
+        if (testResponse.error?.includes("Missing API key") || testResponse.error?.includes("Gemini API key")) {
+          console.log("Gemini API key missing");
           setApiConfigured(false);
         } else {
-          console.log("API configuration check passed");
+          console.log("Gemini API configuration check passed");
           setApiConfigured(true);
         }
       } catch (error) {
-        console.error("Error checking API configuration:", error);
+        console.error("Error checking Gemini API configuration:", error);
         setApiConfigured(false);
       }
     };
@@ -65,13 +64,13 @@ const AIChat: React.FC = () => {
 
     const initialMessages: Message[] = [
       {
-        text: "Hello! I'm Estrella, your strategic planning assistant. How can I help you organize your projects today?",
+        text: "Hello! I'm Estrella, your strategic planning assistant powered by Gemini AI. How can I help you organize your projects today?",
         sender: 'ai',
         persona: 'estrella',
         timestamp: new Date()
       },
       {
-        text: "Hi there! I'm Stellar, your client relations expert. I can help you understand client needs and build stronger relationships. Just switch to my tab to chat with me!",
+        text: "Hi there! I'm Stellar, your client relations expert powered by Gemini AI. I can help you understand client needs and build stronger relationships. Just switch to my tab to chat with me!",
         sender: 'ai',
         persona: 'stellar',
         timestamp: new Date()
@@ -99,8 +98,8 @@ const AIChat: React.FC = () => {
     
     if (!apiConfigured) {
       toast({
-        title: "API Configuration Error",
-        description: "The AI service is not properly configured. Please try again later.",
+        title: "Gemini API Configuration Error",
+        description: "The Gemini AI service is not properly configured. Please try again later.",
         variant: "destructive"
       });
       return;
@@ -116,9 +115,9 @@ const AIChat: React.FC = () => {
     setIsLoading(true);
 
     try {
-      console.log("Sending message to AI:", inputText);
+      console.log("Sending message to Gemini AI:", inputText);
       const response = await generateAIResponse(inputText, activePersona);
-      console.log("Received AI response:", response);
+      console.log("Received Gemini AI response:", response);
       
       const aiMessage: Message = {
         text: response.text,
@@ -132,17 +131,17 @@ const AIChat: React.FC = () => {
       
       if (response.error) {
         toast({
-          title: "AI Response Error",
+          title: "Gemini AI Response Error",
           description: response.error,
           variant: "destructive"
         });
       }
     } catch (error) {
-      console.error('Error getting AI response:', error);
+      console.error('Error getting Gemini AI response:', error);
       
       // Add error message to chat
       setMessages(prev => [...prev, {
-        text: "Sorry, there was an error connecting to the AI service. Please check your network connection and try again.",
+        text: "Sorry, there was an error connecting to the Gemini AI service. Please check your network connection and try again.",
         sender: 'ai',
         persona: activePersona,
         timestamp: new Date(),
@@ -151,7 +150,7 @@ const AIChat: React.FC = () => {
       
       toast({
         title: "Connection Error",
-        description: "There was an issue connecting to the AI service. Please check your network connection.",
+        description: "There was an issue connecting to the Gemini AI service. Please check your network connection.",
         variant: "destructive"
       });
     } finally {
@@ -175,8 +174,8 @@ const AIChat: React.FC = () => {
         <div className="bg-amber-50 border-l-4 border-amber-500 p-4 flex items-center gap-2">
           <AlertTriangle className="text-amber-500" />
           <div>
-            <p className="font-medium text-amber-800">AI Service Not Available</p>
-            <p className="text-sm text-amber-700">The AI service is currently unavailable. Please try again later.</p>
+            <p className="font-medium text-amber-800">Gemini AI Service Not Available</p>
+            <p className="text-sm text-amber-700">The Gemini AI service is currently unavailable. Please try again later.</p>
           </div>
         </div>
       )}
